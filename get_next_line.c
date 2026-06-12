@@ -6,7 +6,7 @@
 /*   By: yohsawa <yohsawa@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/11 03:59:53 by yohsawa           #+#    #+#             */
-/*   Updated: 2026/05/30 15:08:17 by yohsawa          ###   ########.fr       */
+/*   Updated: 2026/06/04 16:42:40 by yohsawa          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,10 +29,7 @@ static char	*read_to_newline(int fd, char *line)
 		buffer[read_bytes] = '\0';
 		line = ft_strjoin_gnl(line, buffer);
 		if (!line)
-		{
-			free(buffer);
-			return (NULL);
-		}
+			return (free(buffer), NULL);
 	}
 	free(buffer);
 	return (line);
@@ -97,21 +94,21 @@ static char	*save_remainder(char *line)
 
 char	*get_next_line(int fd)
 {
-	static char	*line;
-	char		*next_line;
+	static char	*stash;
+	char		*line;
 
 	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
-	line = read_to_newline(fd, line);
-	if (!line)
+	stash = read_to_newline(fd, stash);
+	if (!stash)
 		return (NULL);
-	if (line[0] == '\0')
+	if (stash[0] == '\0')
 	{
-		free(line);
-		line = NULL;
+		free(stash);
+		stash = NULL;
 		return (NULL);
 	}
-	next_line = extract_next_line(line);
-	line = save_remainder(line);
-	return (next_line);
+	line = extract_next_line(stash);
+	stash = save_remainder(stash);
+	return (line);
 }

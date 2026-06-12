@@ -6,7 +6,7 @@
 /*   By: yohsawa <yohsawa@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/30 15:00:05 by yohsawa           #+#    #+#             */
-/*   Updated: 2026/05/30 15:08:04 by yohsawa          ###   ########.fr       */
+/*   Updated: 2026/06/04 16:42:45 by yohsawa          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,21 +97,21 @@ static char	*save_remainder(char *line)
 
 char	*get_next_line(int fd)
 {
-	static char	*line[1024];
-	char		*next_line;
+	static char	*stash[1024];
+	char		*line;
 
 	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
-	line[fd] = read_to_newline(fd, line[fd]);
-	if (!line[fd])
+	stash[fd] = read_to_newline(fd, stash[fd]);
+	if (!stash[fd])
 		return (NULL);
-	if (line[fd][0] == '\0')
+	if (stash[fd][0] == '\0')
 	{
-		free(line[fd]);
-		line[fd] = NULL;
+		free(stash[fd]);
+		stash[fd] = NULL;
 		return (NULL);
 	}
-	next_line = extract_next_line(line[fd]);
-	line[fd] = save_remainder(line[fd]);
-	return (next_line);
+	line = extract_next_line(stash[fd]);
+	stash[fd] = save_remainder(stash[fd]);
+	return (line);
 }
